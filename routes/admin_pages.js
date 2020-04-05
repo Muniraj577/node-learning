@@ -38,10 +38,10 @@ router.post('/add-page', [
     if (slug == "")
         slug = title.replace(/\s+/g, '-').toLowerCase();
     var content = req.body.content;
-    var errors = validationResult(req).array();
-    if (errors) {
+    var errors = validationResult(req);
+    if (!errors.isEmpty()) {
         res.render('admin/add_page', {
-            errors: errors,
+            errors: errors.array(),
             title: title,
             slug: slug,
             content: content
