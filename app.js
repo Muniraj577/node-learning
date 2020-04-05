@@ -4,12 +4,10 @@ let mongoose = require('mongoose');
 let config = require('./config/database');
 let bodyParser = require('body-parser');
 let session = require('express-session');
-let expressValidator = require('express-validator');
+
 
 // Init app
 let app = express();
-//Express Validator
-app.use(expressValidator());
 //Body Parser Middleware
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,7 +43,11 @@ app.set('view engine', 'ejs');
 //Set public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Set global errors variables
+app.locals.errors = null;
 
+// let expressValidator = require('express-validator');
+// app.use(expressValidator());
 
 //Set Routes
 let pages = require('./routes/pages.js');
