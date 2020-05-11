@@ -4,10 +4,13 @@ let mongoose = require('mongoose');
 let config = require('./config/database');
 let bodyParser = require('body-parser');
 let session = require('express-session');
-
+let fileUpload = require('express-fileupload');
+const {customValidators} = require('express-validator');
 
 // Init app
 let app = express();
+//File upload middleware
+app.use(fileUpload());
 //Body Parser Middleware
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,9 +20,9 @@ app.use(bodyParser.json());
 //Express session middleware
 app.use(session({
     secret: 'keyboard cat',
-    resave: false,
+    resave: true,
     saveUninitialized: true,
-    cookie: { secure: true }
+    // cookie: { secure: true }
 }));
 
 //Express messages
@@ -47,12 +50,36 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.locals.errors = null;
 
 // let expressValidator = require('express-validator');
-// app.use(expressValidator());
+// app.use(expressValidator({
+//     customValidators: {
+//         isImage: function (value, filename) {
+//             var extension = (path.extname(filename)).toLowerCase();
+//             switch (extension) {
+//                 case '.jpg':
+//                     return '.jpg';
+//                 case '.png':
+//                     return '.png';
+//                 case '.jpeg':
+//                     return '.jpeg';
+//                 case '':
+//                     return '.jpg';
+//                 default:
+//                     return false;
+//             }
+//         }
+//     }
+// }));
+
+
 
 //Set Routes
 let pages = require('./routes/pages.js');
 let adminPages = require('./routes/admin_pages.js');
+let adminCategories = require('./routes/admin_category.js');
+let adminProducts = require('./routes/admin_products.js');
 app.use('/admin/pages', adminPages);
+app.use('/admin/categories', adminCategories);
+app.use('/admin/products', adminProducts);
 app.use('/', pages);
 //Start the server
 let hostname = '127.0.0.1';

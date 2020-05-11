@@ -1,3 +1,3 @@
 module.exports = {
-    database: 'mongodb://localhost/cmscart'
+    database: 'mongodb://localhost:27017/cartapp'
 };

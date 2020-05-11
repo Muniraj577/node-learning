@@ -1,0 +1,11 @@
+.sorting tr:not(.home){
+    cursor: pointer;
+}
+
+.ui-state-highlight{
+    border: 1px dashed #ccc;
+}
+
+#imgPreview{
+    margin: 20px;
+}
