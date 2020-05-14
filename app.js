@@ -6,6 +6,7 @@ let bodyParser = require('body-parser');
 let session = require('express-session');
 let fileUpload = require('express-fileupload');
 const {customValidators} = require('express-validator');
+let passport = require('passport');
 
 // Init app
 let app = express();
@@ -24,7 +25,11 @@ app.use(session({
     saveUninitialized: true,
     // cookie: { secure: true }
 }));
-
+//Passport config
+require('./config/passport')(passport);
+//Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 //Express messages
 app.use(require('connect-flash')());
 app.use(function (req, res, next) {
@@ -70,10 +75,14 @@ app.locals.errors = null;
 //     }
 // }));
 
-
+app.get('*', function (req, res, next) {
+   res.locals.user = req.user || null;
+   next();
+});
 
 //Set Routes
 let pages = require('./routes/pages.js');
+let users = require('./routes/users.js');
 let adminPages = require('./routes/admin_pages.js');
 let adminCategories = require('./routes/admin_category.js');
 let adminProducts = require('./routes/admin_products.js');
@@ -81,6 +90,7 @@ app.use('/admin/pages', adminPages);
 app.use('/admin/categories', adminCategories);
 app.use('/admin/products', adminProducts);
 app.use('/', pages);
+app.use('/users', users);
 //Start the server
 let hostname = '127.0.0.1';
 let port = 3000;

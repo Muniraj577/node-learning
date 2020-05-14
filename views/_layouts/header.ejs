@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
     <title><%= title %></title>
 </head>
 <body>
@@ -16,15 +17,26 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
+            <% if (!user) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/register">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/login">Login</a>
+                </li>
+            <% } else { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/logout">Hi, <%= user.username %> ( Logout )</a>
+                </li>
+            <% } %>
+            <% if (user && user.admin == 1) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/pages">Admin Area</a>
+                </li>
+            <% } %>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
@@ -44,5 +56,12 @@
         </form>
     </div>
 </nav>
-<div class="container">
-<%- messages('messages', locals) %>
+<div class="container mt-4">
+    <%- messages('messages', locals) %>
+    <% if (errors) { %>
+        <% errors.forEach(function(error){ %>
+            <div class="alert alert-danger">
+                <%= error.msg %>
+            </div>
+        <% }); %>
+<% } %>

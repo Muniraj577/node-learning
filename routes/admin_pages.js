@@ -1,14 +1,13 @@
-// import * as Page from "mongoose";
-
 let express = require('express');
 let router = express.Router();
 const {check, validationResult} = require('express-validator');
-
+let auth = require('../config/auth');
+let isAdmin = auth.isAdmin;
 var Page = require('../models/page');
 /*
  * Get pages index
  */
-router.get('/', function (req, res) {
+router.get('/', isAdmin, function (req, res) {
     Page.find({}).sort({sorting: 1}).exec(function (err, pages) {
         res.render('admin/pages', {
             pages: pages
@@ -36,7 +35,7 @@ router.post('/reorder-pages', function (req, res) {
 /*
  * Get add page
  */
-router.get('/add-page', function (req, res) {
+router.get('/add-page', isAdmin, function (req, res) {
     var title = "";
     var slug = "";
     var content = "";
@@ -50,7 +49,7 @@ router.get('/add-page', function (req, res) {
 /*
  * Post add page
  */
-router.post('/add-page', [
+router.post('/add-page', isAdmin, [
     check('title', 'Title must have a value').not().isEmpty(),
     check('content', 'Content must have a value').not().isEmpty()
 ], (req, res, next) => {
@@ -96,7 +95,7 @@ router.post('/add-page', [
     }
 });
 
-router.get('/edit-page/:id', function (req, res) {
+router.get('/edit-page/:id', isAdmin, function (req, res) {
     Page.findById(req.params.id, function (err, page) {
         if (err) return console.log(err);
         res.render('admin/edit_page', {
@@ -108,7 +107,7 @@ router.get('/edit-page/:id', function (req, res) {
     });
 });
 
-router.post('/edit-page/:id', [
+router.post('/edit-page/:id', isAdmin, [
     check('title', 'Title must have a value').not().isEmpty(),
     check('content', 'Content must have a value').not().isEmpty()
 ], (req, res, next) => {
@@ -157,7 +156,7 @@ router.post('/edit-page/:id', [
     }
 });
 
-router.get('/delete-page/:id', function (req, res) {
+router.get('/delete-page/:id', isAdmin, function (req, res) {
     Page.findByIdAndRemove(req.params.id, function (error) {
         if (error) return console.log(error);
         req.flash('success', 'Page deleted successfully');
